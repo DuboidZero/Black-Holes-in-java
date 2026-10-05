@@ -1,0 +1,70 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'cosmic'
+version = '1.0.0'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+repositories {
+    mavenCentral()
+}
+
+// LWJGL version and platform
+def lwjglVersion = '3.3.3'
+def lwjglNatives = 'natives-linux'
+
+dependencies {
+    // LWJGL BOM
+    implementation platform("org.lwjgl:lwjgl-bom:${lwjglVersion}")
+
+    // Core LWJGL modules
+    implementation 'org.lwjgl:lwjgl'
+    implementation 'org.lwjgl:lwjgl-glfw'
+    implementation 'org.lwjgl:lwjgl-opengl'
+    implementation 'org.lwjgl:lwjgl-stb'
+
+    // Linux natives
+    runtimeOnly "org.lwjgl:lwjgl:${lwjglVersion}:${lwjglNatives}"
+    runtimeOnly "org.lwjgl:lwjgl-glfw:${lwjglVersion}:${lwjglNatives}"
+    runtimeOnly "org.lwjgl:lwjgl-opengl:${lwjglVersion}:${lwjglNatives}"
+    runtimeOnly "org.lwjgl:lwjgl-stb:${lwjglVersion}:${lwjglNatives}"
+
+    // Testing
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+application {
+    mainClass = 'cosmic.app.BlackHoleApp'
+    // Required for LWJGL on newer JVMs
+    applicationDefaultJvmArgs = [
+        '--add-opens', 'java.base/java.lang=ALL-UNNAMED',
+        '-Djava.awt.headless=true',
+        '-Xmx512m'
+    ]
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'passed', 'failed', 'skipped'
+    }
+}
+
+// Ensure resources are included
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'cosmic.app.BlackHoleApp'
+    }
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}

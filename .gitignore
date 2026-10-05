@@ -1,0 +1,16 @@
+# Gradle and generated application output
+.gradle/
+build/
+bin/
+
+# Java build artifacts
+*.class
+hs_err_pid*.log
+
+# IDE-local files
+.idea/
+*.iml
+
+# Operating-system metadata
+.DS_Store
+Thumbs.db
